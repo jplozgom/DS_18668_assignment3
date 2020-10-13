@@ -32,7 +32,8 @@ class Population:
         self.average_fitness /= size
 
     def print_population_status(self):
-        print("\nPopulation " + str(self.generations))
+        print("\nPopulation #:" + str(self.generations))
+        print("\nPopulation size: " + str(len(self.population)))
         print("Average fitness: " + str(self.average_fitness))
         print("Best individual: " + str(self.best_ind))
 
