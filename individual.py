@@ -24,7 +24,7 @@ class Individual:
             if(target[i] == self.genes[i]):
                 score += 1
 
-        self.fitness = score
+        self.fitness = score / len(target)
 
     def __repr__(self):
         return ''.join(self.genes) + " -> fitness: " + str(self.fitness)
@@ -95,7 +95,7 @@ class Individual:
             newGene = random.choice(string.ascii_letters)
             geneIndex = random.randint(0, len(self.genes) - 1)
             self.genes[geneIndex] = newGene
-            print("GENE MUTATED = " + str(geneIndex))
+            # print("GENE MUTATED = " + str(geneIndex))
 
 
 
