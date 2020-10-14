@@ -4,9 +4,10 @@ from population import Population
 def main():
     pop_size = 200
     target = "To be or not to be."
-    mutation_rate = 0.3
+    mutation_rate = 0.2
+    cross_over_points = 2
 
-    pop = Population(target, pop_size, mutation_rate)
+    pop = Population(target, pop_size, mutation_rate, cross_over_points)
     # testing(pop)
 
     # you don't need to call this function when the ones right bellow are fully implemented

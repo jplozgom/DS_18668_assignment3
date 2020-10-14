@@ -8,12 +8,14 @@ class Population:
         A class that describes a population of virtual individuals
     """
 
-    def __init__(self, target, size, mutation_rate):
+    def __init__(self, target, size, mutation_rate, cross_over_points):
         self.population = []
         self.populationSize = size
+        self.originalPopulationSize = size
         self.generations = 0
         self.target = target
         self.mutation_rate = mutation_rate
+        self.cross_over_points = cross_over_points
         self.best_ind = None
         self.finished = False
         self.perfect_score = 1.0
@@ -89,7 +91,7 @@ class Population:
         k = 0
         # while mating pool is not full iterate / move i back to zero when we get to the end of the population list
         # can be improved since it goes multiple times through the array
-        while len(self.mating_pool) < len(self.population):
+        while len(self.mating_pool) < self.originalPopulationSize:
             individual = self.population[i]
             p = random.uniform(0, 1)
             if p <= individual.fitness / fitnessSum:
@@ -101,8 +103,7 @@ class Population:
                 i = 0
                 j += 1
 
-        print(self.mating_pool)
-        print(len(self.mating_pool))
+        print("size of mating pool = " + str(len(self.mating_pool)))
     # Generate the new population based on the natural selection function
     def generate_new_population(self):
 
@@ -123,7 +124,7 @@ class Population:
             # print(parent2.genes)
 
             # 3. mutate offspring if necessary
-            child1, child2 = parent1.crossover(parent2, twoPointCrossOver = True)
+            child1, child2 = parent1.crossover(parent2, crossover_points=self.cross_over_points)
             child1.mutate(self.mutation_rate)
             child2.mutate(self.mutation_rate)
             # print("\nChilds :\n")
@@ -135,19 +136,25 @@ class Population:
             child2.calc_fitness(self.target)
             appended = 0
 
-            if child1.fitness >= parent1.fitness or child1.fitness >= parent2.fitness:
+            if child1.fitness > parent1.fitness or child1.fitness > parent2.fitness:
                 newPopulation.append(child1)
                 appended += 1
 
-            if child2.fitness >= parent1.fitness or child2.fitness >= parent2.fitness:
+            if child2.fitness > parent1.fitness or child2.fitness > parent2.fitness:
                 newPopulation.append(child2)
                 appended += 1
 
-            if appended < 2:
+            if appended == 1:
                 if parent1.fitness > parent2.fitness:
                     newPopulation.append(parent1)
                 else:
                     newPopulation.append(parent2)
+            elif appended == 0:
+                newPopulation.append(parent1)
+                newPopulation.append(parent2)
+
+
+
 
         # random.shuffle(newPopulation)
         self.population = newPopulation

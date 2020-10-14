@@ -34,17 +34,19 @@ class Individual:
         genes = []
 
         for i in range(size):
-            genes.append(random.choice(string.ascii_letters))
+            genes.append(random.choice(string.printable))
 
         return genes
 
     # The crossover function selects pairs of individuals to be mated, generating a third individual (child)
-    def crossover(self, partner, *args, **kwargs):
+    def crossover(self, partner, crossover_points, *args, **kwargs):
         # Crossover suggestion: child with half genes from one parent and half from the other parent
-        if 'twoPointCrossOver' in kwargs and kwargs['twoPointCrossOver']:
+        if 'crossover_points' in kwargs and kwargs['crossover_points'] == 2:
             return self.twoPointCrossover(partner, kwargs)
         else:
             return self.onePointCrossover(partner, kwargs)
+
+
 
     # The crossover function selects pairs of individuals to be mated, generating a third individual (child)
     def onePointCrossover(self, partner, *args, **kwargs):
@@ -92,7 +94,7 @@ class Individual:
         p = random.uniform(0, 1)
         if p <= mutation_rate:
             # code to mutate the individual here
-            newGene = random.choice(string.ascii_letters)
+            newGene = random.choice(string.printable)
             geneIndex = random.randint(0, len(self.genes) - 1)
             self.genes[geneIndex] = newGene
             # print("GENE MUTATED = " + str(geneIndex))
