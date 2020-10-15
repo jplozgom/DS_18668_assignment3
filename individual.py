@@ -56,14 +56,18 @@ class Individual:
         child1 = Individual(0)
         child2 = Individual(0)
 
-        # apply crossOverPoint in one point
-        for i in range(len(self.genes)):
-            if i < crossOverPoint:
-                child1.genes.append(self.genes[i])
-                child2.genes.append(partner.genes[i])
-            else:
-                child1.genes.append(partner.genes[i])
-                child2.genes.append(self.genes[i])
+        child1.genes = self.genes[:crossOverPoint] + partner.genes[crossOverPoint:]
+        child2.genes = partner.genes[:crossOverPoint] + self.genes[crossOverPoint:]
+
+        # # # apply crossOverPoint in one point
+        # for i in range(len(self.genes)):
+        #     if i < crossOverPoint:
+        #         child1.genes.append(self.genes[i])
+        #         child2.genes.append(partner.genes[i])
+        #     else:
+        #         child1.genes.append(partner.genes[i])
+        #         child2.genes.append(self.genes[i])
+
         return child1, child2
 
 

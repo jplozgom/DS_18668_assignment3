@@ -8,7 +8,7 @@ class Population:
         A class that describes a population of virtual individuals
     """
 
-    def __init__(self, target, size, mutation_rate, cross_over_points):
+    def __init__(self, target, size, mutation_rate, cross_over_points, *args, **kwargs):
         self.population = []
         self.populationSize = size
         self.originalPopulationSize = size
@@ -22,14 +22,12 @@ class Population:
         self.max_fitness = 0.0
         self.pop_fitness_sum = 0.0
         self.average_fitness = 0.0
+        self.generation_fitnesses = []
         self.mating_pool = []
+        self.generations_limit = None
 
         for i in range(size):
             ind = Individual(len(target))
-            # if ind.fitness > self.max_fitness:
-            #     self.max_fitness = ind.fitness
-
-            # self.average_fitness += ind.fitness
             self.population.append(ind)
 
         self.calculateFitnessForEveryone()
@@ -67,41 +65,18 @@ class Population:
         # # a lower fitness = fewer entries to mating pool = less likely to be picked as a parent
 
 
-        # for i in range(self.populationSize):
-        #     individual = self.population[i]
-        #     appendTimes = int(round(( individual.fitness / fitnessSum ) * self.populationSize))
-
-        #     # Searching for the position
-        #     for j in range(appendTimes):
-        #         self.mating_pool.append(i)
-        #         if len(self.mating_pool) == len(self.population):
-        #             break
-
-        #     if len(self.mating_pool) == len(self.population):
-        #         break
-
-        # print(self.mating_pool)
-        # print(len(self.mating_pool))
-
-        # if(len(self.mating_pool) != len(self.mating_pool)):
-        #     raise Exception("mating pool size is wrong")
-
-        i = 0
-        j = 0
-        k = 0
-        # while mating pool is not full iterate / move i back to zero when we get to the end of the population list
-        # can be improved since it goes multiple times through the array
-        while len(self.mating_pool) < self.originalPopulationSize:
+        for i in range(self.originalPopulationSize):
             individual = self.population[i]
-            p = random.uniform(0, 1)
-            if p <= individual.fitness / fitnessSum:
-                self.mating_pool.append(i)
+            appendTimes = int(round(( individual.fitness / fitnessSum ) * self.populationSize))
 
-            i += 1
-            k += 1
-            if i == len(self.population):
-                i = 0
-                j += 1
+            # Searching for the position
+            for j in range(appendTimes):
+                self.mating_pool.append(i)
+                if len(self.mating_pool) == len(self.population):
+                    break
+
+            if len(self.mating_pool) == len(self.population):
+                break
 
         print("size of mating pool = " + str(len(self.mating_pool)))
     # Generate the new population based on the natural selection function
@@ -115,21 +90,15 @@ class Population:
 
         # 2. for each pair of elements in the mating pool create two offsprings
         for i in range(0, self.populationSize, 2):
-            # print("\n\n----------------\n")
-            # print("Parents :\n")
+            # select two random values from the mating pool
             indexes = random.sample(range(0, len(self.mating_pool)), 2)
             parent1 = self.population[indexes[0]]
             parent2 = self.population[indexes[1]]
-            # print(parent1.genes)
-            # print(parent2.genes)
 
             # 3. mutate offspring if necessary
             child1, child2 = parent1.crossover(parent2, crossover_points=self.cross_over_points)
             child1.mutate(self.mutation_rate)
             child2.mutate(self.mutation_rate)
-            # print("\nChilds :\n")
-            # print(child1.genes)
-            # print(child2.genes)
 
             #4. add to new population
             child1.calc_fitness(self.target)
@@ -155,8 +124,8 @@ class Population:
 
 
 
-
-        # random.shuffle(newPopulation)
+        # store the current population average fitness
+        self.generation_fitnesses.append(self.average_fitness)
         self.population = newPopulation
         self.calculateFitnessForEveryone()
 
