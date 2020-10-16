@@ -1,37 +1,91 @@
 from population import Population
 import time
+import matplotlib.pyplot as plt
 
 
 def main():
-    pop_size = 1000
+    # populations = [300,500,1000,1500, 2000, 3000, 4000, 6000, 8000, 10000, 12000, 16000]
+    populations = [200]
     target = "To be or not to be."
-    mutation_rate = 0.01
+    mutation_rate = 0.02
     testingMode  = False
     totalTrials = 20
-    trials = {
-        "sumAvgGenerations": 0,
-        "sumPopFitnessAverage": 0,
-        "sumExecutionTime": 0,
-        "totalFinished": 0,
-    }
 
-    start_time = time.time()
+    if len(populations) == 1:
+        trials = {
+            "sumAvgGenerations": 0,
+            "sumPopFitnessAverage": 0,
+            "sumExecutionTime": 0,
+            "totalFinished": 0,
+        }
+        pop_size = populations[0]
+        start_time = time.time()
 
-    for i in range(totalTrials):
-        results = executeGA(pop_size, mutation_rate, target, testingMode)
-        if results is not None:
-            trials['sumAvgGenerations'] += results['generations']
-            trials['sumPopFitnessAverage'] += results['popFitnessAverage']
-            trials['sumExecutionTime'] += results['executionTime']
-            trials['totalFinished'] += results['finished']
+        for i in range(totalTrials):
+            results = executeGA(pop_size, mutation_rate, target, testingMode)
+            if results is not None:
+                trials['sumAvgGenerations'] += results['generations']
+                trials['sumPopFitnessAverage'] += results['popFitnessAverage']
+                trials['sumExecutionTime'] += results['executionTime']
+                trials['totalFinished'] += results['finished']
 
-    end_time = time.time()
-    print("Total time AVG = %s seconds " % (end_time - start_time))
-    print("Execution trial time AVG = %s seconds " % (trials['sumExecutionTime']/totalTrials))
-    print("AVG of Generations =  "  + str(trials['sumAvgGenerations'] / totalTrials))
-    print("Last population fitness AVG =  "  + str(trials['sumPopFitnessAverage'] / totalTrials))
-    print("Trials completed =  "  + str(trials['totalFinished']))
+        end_time = time.time()
+        print("Total time AVG = %s seconds " % (end_time - start_time))
+        print("Execution trial time AVG = %s seconds " % (trials['sumExecutionTime']/totalTrials))
+        print("AVG of Generations =  "  + str(trials['sumAvgGenerations'] / totalTrials))
+        print("Last population fitness AVG =  "  + str(trials['sumPopFitnessAverage'] / totalTrials))
+        print("Trials completed =  "  + str(trials['totalFinished']))
+    else:
+        populations_data = {
+            'sumAvgGenerations': [],
+            'sumPopFitnessAverage': [],
+            'sumExecutionTime': [],
+            'totalFinished': [],
+        }
+        for pop_size in populations:
 
+            trials = {
+                "sumAvgGenerations": 0,
+                "sumPopFitnessAverage": 0,
+                "sumExecutionTime": 0,
+                "totalFinished": 0,
+            }
+            start_time = time.time()
+            for i in range(totalTrials):
+                results = executeGA(pop_size, mutation_rate, target, testingMode)
+                if results is not None:
+                    trials['sumAvgGenerations'] += results['generations']
+                    trials['sumPopFitnessAverage'] += results['popFitnessAverage']
+                    trials['sumExecutionTime'] += results['executionTime']
+                    trials['totalFinished'] += results['finished']
+            end_time = time.time()
+
+            populations_data['sumAvgGenerations'].append(trials['sumAvgGenerations']/totalTrials)
+            populations_data['sumPopFitnessAverage'].append(trials['sumPopFitnessAverage']/totalTrials)
+            populations_data['sumExecutionTime'].append(trials['sumExecutionTime']/totalTrials)
+            populations_data['totalFinished'].append(trials['totalFinished'])
+
+        fig = plt.figure(figsize=(10, 4))
+        plt.subplot(1, 2, 1)
+        plt.plot(populations, populations_data['sumAvgGenerations'], color='green', linestyle='dashed', linewidth = 3, marker='o', markerfacecolor='blue', markersize=12)
+        # x-axis label
+        plt.xlabel('populations')
+        # frequency label
+        plt.ylabel('Avg # generations')
+        # plot title
+        plt.title('Avg # generations')
+
+        plt.subplot(1, 2, 2)
+        plt.plot(populations, populations_data['sumExecutionTime'], color='blue', linestyle='dashed', linewidth = 3, marker='o', markerfacecolor='blue', markersize=12)
+        # x-axis label
+        plt.xlabel('populations')
+        # frequency label
+        plt.ylabel('Avg exec time')
+        # plot title
+        plt.title('Avg exec time')
+
+        # function to show the plot
+        plt.show()
 
 def executeGA(populationSize, mutation_rate, target,testingMode):
     pop_size = populationSize
