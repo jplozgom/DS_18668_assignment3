@@ -87,7 +87,6 @@ class Individual:
             newGene = random.choice(string.printable)
             geneIndex = random.randint(0, len(self.genes) - 1)
             self.genes[geneIndex] = newGene
-            # print("GENE MUTATED = " + str(geneIndex))
 
 
 

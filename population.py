@@ -30,23 +30,23 @@ class Population:
             ind = Individual(len(target))
             self.population.append(ind)
 
-        self.calculateFitnessForEveryone()
+        self.evaluate()
 
 
-    def calculateFitnessForEveryone(self):
-        self.average_fitness = 0
-        self.populationSize = len(self.population)
-        self.max_fitness = 0
-        for i in range(self.populationSize):
-            self.population[i].calc_fitness(self.target)
-            if self.population[i].fitness > self.max_fitness:
-                self.max_fitness = self.population[i].fitness
-                self.best_ind = self.population[i]
+    # def calculateFitnessForEveryone(self):
+    #     self.average_fitness = 0
+    #     self.populationSize = len(self.population)
+    #     self.max_fitness = 0
+    #     for i in range(self.populationSize):
+    #         self.population[i].calc_fitness(self.target)
+    #         if self.population[i].fitness > self.max_fitness:
+    #             self.max_fitness = self.population[i].fitness
+    #             self.best_ind = self.population[i]
 
-            self.average_fitness += self.population[i].fitness
+    #         self.average_fitness += self.population[i].fitness
 
-        self.pop_fitness_sum = self.average_fitness
-        self.average_fitness /= self.populationSize
+    #     self.pop_fitness_sum = self.average_fitness
+    #     self.average_fitness /= self.populationSize
 
 
     def print_population_status(self):
@@ -69,7 +69,6 @@ class Population:
             individual = self.population[i]
             appendTimes = int(round(( individual.fitness / fitnessSum ) * self.populationSize))
 
-            # Searching for the position
             for j in range(appendTimes):
                 self.mating_pool.append(i)
                 if len(self.mating_pool) == len(self.population):
@@ -82,10 +81,8 @@ class Population:
     def generate_new_population(self):
 
         newPopulation = []
-
         # 1. create mating pool
         self.natural_selection()
-
 
         # 2. for each pair of elements in the mating pool create two offsprings
         for i in range(0, self.populationSize, 2):
@@ -121,19 +118,25 @@ class Population:
                 newPopulation.append(parent1)
                 newPopulation.append(parent2)
 
-        # store the current population average fitness
-        self.generation_fitnesses_sum += self.average_fitness
         self.population = newPopulation
-        self.calculateFitnessForEveryone()
 
     # Compute/Identify the current "most fit" individual within the population
     def evaluate(self):
-        self.generations += 1
-        for ind in self.population:
-            if self.best_ind == None or ind.fitness > self.max_fitness:
-                self.max_fitness = ind.fitness
-                self.best_ind = ind
+        self.average_fitness = 0
+        self.populationSize = len(self.population)
+        self.max_fitness = 0
+        for i in range(self.populationSize):
+            self.population[i].calc_fitness(self.target)
+            if self.best_ind == None or self.population[i].fitness > self.max_fitness:
+                self.max_fitness = self.population[i].fitness
+                self.best_ind = self.population[i]
 
-            if self.best_ind.fitness == 1:
-                self.finished = True
-                break
+            self.average_fitness += self.population[i].fitness
+
+        self.pop_fitness_sum = self.average_fitness
+        self.average_fitness /= self.populationSize
+        self.generation_fitnesses_sum += self.average_fitness
+        self.generations += 1
+
+        if self.best_ind.fitness == 1:
+            self.finished = True
