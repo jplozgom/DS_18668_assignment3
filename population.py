@@ -10,7 +10,7 @@ class Population:
 
     def __init__(self, target, size, mutation_rate, cross_over_points, *args, **kwargs):
         self.population = []
-        self.populationSize = size
+        self.populationSize = 0
         self.originalPopulationSize = size
         self.generations = 0
         self.target = target
@@ -20,9 +20,9 @@ class Population:
         self.finished = False
         self.perfect_score = 1.0
         self.max_fitness = 0.0
-        self.pop_fitness_sum = 0.0
-        self.average_fitness = 0.0
-        self.generation_fitnesses = []
+        self.pop_fitness_sum = 0.0 # sum of the population individuals fitneses
+        self.average_fitness = 0.0 # average of the population fitness
+        self.generation_fitnesses_sum = 0
         self.mating_pool = []
         self.generations_limit = None
 
@@ -59,11 +59,11 @@ class Population:
     def natural_selection(self):
         self.mating_pool = []
         fitnessSum = self.average_fitness * self.populationSize
+
         # # Implementation suggestion based on Lab 3:
         # # Based on fitness, each member will get added to the mating pool a certain number of times
         # # a higher fitness = more entries to mating pool = more likely to be picked as a parent
         # # a lower fitness = fewer entries to mating pool = less likely to be picked as a parent
-
 
         for i in range(self.originalPopulationSize):
             individual = self.population[i]
@@ -78,7 +78,6 @@ class Population:
             if len(self.mating_pool) == len(self.population):
                 break
 
-        print("size of mating pool = " + str(len(self.mating_pool)))
     # Generate the new population based on the natural selection function
     def generate_new_population(self):
 
@@ -122,10 +121,8 @@ class Population:
                 newPopulation.append(parent1)
                 newPopulation.append(parent2)
 
-
-
         # store the current population average fitness
-        self.generation_fitnesses.append(self.average_fitness)
+        self.generation_fitnesses_sum += self.average_fitness
         self.population = newPopulation
         self.calculateFitnessForEveryone()
 

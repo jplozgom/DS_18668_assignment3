@@ -39,7 +39,7 @@ class Individual:
         return genes
 
     # The crossover function selects pairs of individuals to be mated, generating a third individual (child)
-    def crossover(self, partner, crossover_points, *args, **kwargs):
+    def crossover(self, partner, *args, **kwargs):
         # Crossover suggestion: child with half genes from one parent and half from the other parent
         if 'crossover_points' in kwargs and kwargs['crossover_points'] == 2:
             return self.twoPointCrossover(partner, kwargs)
@@ -59,15 +59,6 @@ class Individual:
         child1.genes = self.genes[:crossOverPoint] + partner.genes[crossOverPoint:]
         child2.genes = partner.genes[:crossOverPoint] + self.genes[crossOverPoint:]
 
-        # # # apply crossOverPoint in one point
-        # for i in range(len(self.genes)):
-        #     if i < crossOverPoint:
-        #         child1.genes.append(self.genes[i])
-        #         child2.genes.append(partner.genes[i])
-        #     else:
-        #         child1.genes.append(partner.genes[i])
-        #         child2.genes.append(self.genes[i])
-
         return child1, child2
 
 
@@ -80,14 +71,9 @@ class Individual:
         child1 = Individual(0)
         child2 = Individual(0)
 
-        # apply crossOverPoint in one point
-        for i in range(len(self.genes)):
-            if i < crossOverPoint or i >= crossOverPoint2:
-                child1.genes.append(self.genes[i])
-                child2.genes.append(partner.genes[i])
-            else:
-                child1.genes.append(partner.genes[i])
-                child2.genes.append(self.genes[i])
+        child1.genes = self.genes[:crossOverPoint] + partner.genes[crossOverPoint:crossOverPoint2] + self.genes[crossOverPoint2:]
+        child2.genes = partner.genes[:crossOverPoint] + self.genes[crossOverPoint:crossOverPoint2] + partner.genes[crossOverPoint2:]
+
         return child1, child2
 
     # Mutation: based on a mutation probability, the function picks a new random character and replace a gene with it
