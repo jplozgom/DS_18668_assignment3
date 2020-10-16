@@ -28,6 +28,7 @@ class Population:
 
         for i in range(size):
             ind = Individual(len(target))
+            ind.calc_fitness(target)
             self.population.append(ind)
 
         self.evaluate()
@@ -125,13 +126,13 @@ class Population:
         self.average_fitness = 0
         self.populationSize = len(self.population)
         self.max_fitness = 0
-        for i in range(self.populationSize):
-            self.population[i].calc_fitness(self.target)
-            if self.best_ind == None or self.population[i].fitness > self.max_fitness:
-                self.max_fitness = self.population[i].fitness
-                self.best_ind = self.population[i]
+        for ind in self.population:
+            ind.calc_fitness(self.target)
+            if self.best_ind == None or ind.fitness > self.max_fitness:
+                self.max_fitness = ind.fitness
+                self.best_ind = ind
 
-            self.average_fitness += self.population[i].fitness
+            self.average_fitness += ind.fitness
 
         self.pop_fitness_sum = self.average_fitness
         self.average_fitness /= self.populationSize
