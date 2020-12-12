@@ -33,23 +33,6 @@ class Population:
 
         self.evaluate()
 
-
-    # def calculateFitnessForEveryone(self):
-    #     self.average_fitness = 0
-    #     self.populationSize = len(self.population)
-    #     self.max_fitness = 0
-    #     for i in range(self.populationSize):
-    #         self.population[i].calc_fitness(self.target)
-    #         if self.population[i].fitness > self.max_fitness:
-    #             self.max_fitness = self.population[i].fitness
-    #             self.best_ind = self.population[i]
-
-    #         self.average_fitness += self.population[i].fitness
-
-    #     self.pop_fitness_sum = self.average_fitness
-    #     self.average_fitness /= self.populationSize
-
-
     def print_population_status(self):
         print("\nPopulation #:" + str(self.generations))
         print("\nPopulation size: " + str(len(self.population)))
@@ -123,9 +106,12 @@ class Population:
 
     # Compute/Identify the current "most fit" individual within the population
     def evaluate(self):
+
         self.average_fitness = 0
         self.populationSize = len(self.population)
         self.max_fitness = 0
+
+
         for ind in self.population:
             ind.calc_fitness(self.target)
             if self.best_ind == None or ind.fitness > self.max_fitness:
@@ -139,5 +125,6 @@ class Population:
         self.generation_fitnesses_sum += self.average_fitness
         self.generations += 1
 
+        # if best individual found stop
         if self.best_ind.fitness == 1:
             self.finished = True
